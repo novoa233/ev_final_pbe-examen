@@ -14,65 +14,7 @@ const getUsers = (request,response) =>{
         }
       );
 }
-const searchUser = (request,response) =>{
-    connection.query(
-        `SELECT id,name,lastname FROM users where 
-        name like "%${request.body.search}%" 
-        or lastname like "%${request.body.search}%"`,
-        function(err, results, fields) {
-          response.json(results); 
-        }
-      );
-}
-const getUserById = (request,response) =>{
-  connection.query(
-      'SELECT id, name, lastname, email, web_page FROM users where id = '+request.body.id,
-      function(err, results, fields) {
-        response.json(results); 
-      }
-    );
-}
-const getUserNameById = (request,response) =>{
-  connection.query(
-      'SELECT  name FROM users where id = '+request.body.id,
-      function(err, results, fields) {
-        response.json(results); 
-      }
-    );
-}
-const getUserLastNameById = (request,response) =>{
-  connection.query(
-      'SELECT  lastname FROM users where id = '+request.body.id,
-      function(err, results, fields) {
-        response.json(results); 
-      }
-    );
-}
-const getUserEmailById = (request,response) =>{
-  connection.query(
-      'SELECT email FROM users where id = '+request.body.id,
-      function(err, results, fields) {
-        response.json(results); 
-      }
-    );
-}
-const getUserWebPageById = (request,response) =>{
-  connection.query(
-      'SELECT  web_page FROM users where id = '+request.body.id,
-      function(err, results, fields) {
-        response.json(results); 
-      }
-    );
-}
-const getUserDataById = (request,response) =>{
-  const opc = ['id', 'name', 'lastname', 'email', 'web_page']
-  connection.query(
-      `SELECT  ${opc[request.body.field]} FROM users where id = ${request.body.id} `,
-      function(err, results, fields) {
-        response.json(results[0]); 
-      }
-    );
-}
+
 const createUser = (request,response) =>{
   connection.query(
       'insert into users(name,lastname,password,email,web_page) values (?,?,?,?,?) ',
@@ -92,6 +34,28 @@ const createUser = (request,response) =>{
       }
     );
 }
+const deleteUser = (request,response) =>{
+  connection.query(
+    'DELETE FROM clientes where id = '+request.body.id,
+    function(err, results, fields) {
+      response.json(results); 
+     
+    }
+  );
+}
+const updateUser = (request,response) =>{
+  connection.query(
+    'UPDATE clientes(nombres,apellidos,rut,numero_cliente,direccion) values (?,?,?,?,?) ',
+    [
+      request.body.nombres  ,
+      request.body.apellidos,
+      request.body.rut,
+      request.body.numero_cliente,
+      request.body.direccion,
+    ],
+  );
+}
+
 const login  = (request,response) =>{
   if((request.body.usuario == undefined)||(request.body.password == undefined)){
       response.status(400).json({message: "Debe proporcionar usuarios y password", state:false})
@@ -142,14 +106,9 @@ const createSeqUser = (request,response) => {
 }
 module.exports = {
     getUsers,
-    searchUser,
-    getUserById,
     createUser,
-    getUserNameById,
-    getUserLastNameById,
-    getUserEmailById,
-    getUserWebPageById,
-    getUserDataById,
+    updateUser,
+    deleteUser,
     login,
     getSeqUser,
     createSeqUser,
